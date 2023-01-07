@@ -36,9 +36,18 @@ async def main():
 
     await init_db()
 
-    await Accounting.new_batch()
 
-    await Tortoise.close_connections()
+    await Accounting.deposit("User2", "USD", 16.3)
+    await Accounting.deposit("User1", "USD", 4.5)
+
+    await Accounting.withdraw("User2", "USD", 2.14)
+    await Accounting.transfer("User1", "User3", "USD", 3.0)
+
+
+    print("User 1:", await Accounting.get_balance("User1", "USD"))
+    print("User 2:", await Accounting.get_balance("User2", "USD"))
+    print("User 3:", await Accounting.get_balance("User3", "USD"))
+
 
 if __name__ == "__main__":
     asyncio.run(main())

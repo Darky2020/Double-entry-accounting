@@ -7,10 +7,10 @@ class Journal(Base):
 
     postings = fields.ReverseRelation["Posting"]
 
-    type = fields.IntField()
+    type = fields.CharField(max_length=16, index=True)
 
     batch: fields.ForeignKeyRelation["Batch"] = fields.ForeignKeyField(
-        "models.Batch", related_name="journals"
+        "models.Batch", related_name="journals", null=True
     )
 
     @property
