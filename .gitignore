@@ -1,0 +1,16 @@
+*/**/__pycache__/*
+__pycache__/
+venv/*
+config.py
+
+# misc
+export_v*.json
+.DS_STORE
+*.db
+
+# PyCharm
+.idea
+
+# VsCode
+.vscode/*
+
