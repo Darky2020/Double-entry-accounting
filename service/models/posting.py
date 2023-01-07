@@ -6,6 +6,8 @@ class Posting(Base):
         max_digits=28, decimal_places=8, default=0
     )
 
+    index = fields.IntField(index=True)
+
     journal: fields.OneToOneRelation["Journal"] = fields.ForeignKeyField(
         "models.Journal", related_name="postings"
     )

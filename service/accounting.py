@@ -22,7 +22,7 @@ class Accounting(object):
             # The batch is invalid so we search for the journal causing the problem
             async for journal in batch.journals:
                 if not journal.verify:
-                    raise InvalidJournal(journal.id)
+                    raise InvalidJournal(journal.reference)
 
         journal = await Journal.create(**{
             "created": datetime.utcnow(),
@@ -37,7 +37,7 @@ class Accounting(object):
             async for account in Account.exclude(username="CashBook").all():
                 amount = await cls.get_balance(account.username, asset_type.name)
 
-                if math.isclose(amount, 0):
+                if not math.isclose(amount, 0):
                     await Posting.create(**{
                         "amount": amount,
                         "journal": journal,
@@ -64,18 +64,19 @@ class Accounting(object):
         if not (asset_type := await AssetType.filter(name=assetname).first()):
             return 0
 
-        if not (batch := await Batch.filter().order_by("-id").first()):
+        if not (batch := await Batch.filter().order_by("-created").first()):
             return 0
 
         amount = 0
 
         async for journal in batch.journals:
-            if (postings := await journal.postings.filter(
+            postings = await journal.postings.filter(
                 account=account,
                 asset_type=asset_type
-            ).all()):
-                for posting in postings:
-                    amount += posting.amount
+            ).all()
+
+            for posting in postings:
+                amount += posting.amount
 
         return amount
 
