@@ -36,7 +36,7 @@ class Accounting(object):
         if not await batch.verify:
             # The batch is invalid so we search for the journal causing the problem
             async for journal in batch.journals:
-                if not journal.verify:
+                if not await journal.verify:
                     raise InvalidJournal(journal.reference)
 
         journal = await Journal.create(**{
